@@ -9,10 +9,18 @@ def get_requirements() -> List[str]:
             lines = file.readlines()
             for line in lines:
                 line = line.strip()
-                if line and line !='-e .':
+                if line and line != '-e .':
                     requirements_list.append(line)
     except FileNotFoundError:
-            print("requirements.txt file not found. Please make sure it exists in the project directory.")
+        print("requirements.txt file not found. Please make sure it exists in the project directory.")
     return requirements_list
 
-print(get_requirements())
+
+setup(
+    name="Networksecurity",
+    version="0.0.1",
+    author="yeabsira",
+    author_email="yeabsira@example.com",
+    packages=find_packages(),
+    install_requires=get_requirements(),
+)
