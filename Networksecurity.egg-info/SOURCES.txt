@@ -10,8 +10,11 @@ Networksecurity.egg-info/requires.txt
 Networksecurity.egg-info/top_level.txt
 Networksecurity/cloud/__init__.py
 Networksecurity/components/__init__.py
+Networksecurity/components/data_ingestion.py
 Networksecurity/constants/__init__.py
+Networksecurity/constants/training_pipeline/__init__.py
 Networksecurity/entity/__init__.py
+Networksecurity/entity/config_entity.py
 Networksecurity/exception/__init__.py
 Networksecurity/exception/exception.py
 Networksecurity/logger/__init__.py
