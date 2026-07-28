@@ -10,6 +10,8 @@ Requires-Dist: pymongo>=4.0
 Requires-Dist: pymongo[srv]>=4.0
 Requires-Dist: certifi>=2024.7.4
 Requires-Dist: scikit-learn
+Requires-Dist: dill
+Requires-Dist: pyaml
 Dynamic: author
 Dynamic: author-email
 Dynamic: requires-dist
