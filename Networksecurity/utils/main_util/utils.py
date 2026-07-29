@@ -64,3 +64,22 @@ def save_numpy_array_data(file_path:str, array:np.ndarray)->None:
             np.save(file_obj, array)
     except Exception as e:
         raise NetworkSecurityException(e, sys)
+def save_object(file_path:str, obj:object)->None:
+    """
+    Saves a Python object to a file using dill.
+    
+    Args:
+        file_path (str): The path to the file where the object will be saved.
+        obj (object): The Python object to save.
+        
+    Returns:
+        None
+    """
+    try:
+        dir_path = os.path.dirname(file_path)
+        if dir_path:
+            os.makedirs(dir_path, exist_ok=True)
+        with open(file_path, "wb") as file_obj:
+            dill.dump(obj, file_obj)
+    except Exception as e:
+        raise NetworkSecurityException(e, sys)
