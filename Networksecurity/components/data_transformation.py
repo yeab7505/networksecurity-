@@ -40,7 +40,7 @@ class DataTransformation:
          except Exception as e:
              raise NetworkSecurityException(e, sys) from e
 
-    def inititate_data_transformation(self) -> DataTransformationArtifact:
+    def initiate_data_transformation(self) -> DataTransformationArtifact:
         logging.info("Starting data transformation process")
         try:
             training_file_path = self.data_validation_artifact.valid_train_file_path
@@ -67,6 +67,8 @@ class DataTransformation:
             save_numpy_array_data(self.data_transformation_config.transformed_train_file_path, array=train_arr)
             save_numpy_array_data(self.data_transformation_config.transformed_test_file_path, array=test_arr)
             save_object(self.data_transformation_config.transformed_object_file_path, preprocessor_object)
+
+            save_object(file_path="final_models/preprocessor.pkl", obj=preprocessor_object)
 
             data_transformation_artifact = DataTransformationArtifact(
                 transformed_train_file_path=self.data_transformation_config.transformed_train_file_path,

@@ -105,6 +105,8 @@ class ModelTrainer:
             network_model = NetworkModel(preprocessor=preprocessor, model=models[best_model_name])
             save_object(file_path=self.model_trainer_config.trained_model_file_path, obj=network_model)
 
+            save_object(file_path="final_models/model.pkl", obj=best_model)
+
             model_trainer_artifact = ModelTrainerArtifact(
                 trained_model_file_path=self.model_trainer_config.trained_model_file_path,
                 train_metric_artifact=classification_train_metric,

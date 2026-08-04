@@ -3,7 +3,7 @@ from Networksecurity.exception.exception import NetworkSecurityException
 from Networksecurity.logger.logger import logging
 from Networksecurity.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig
 import os,sys
-from Networksecurity.entity.artifact_entity import DataingestionArtifact   
+from Networksecurity.entity.artifact_entity import DataIngestionArtifact   
 import pymongo
 from typing import List
 from sklearn.model_selection import train_test_split

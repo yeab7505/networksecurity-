@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Security Threat Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.15);
+            --border-color: #334155;
+            --table-header-bg: #0f172a;
+            --table-row-hover: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .brand-text h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropzone {
+            border: 2px dashed #475569;
+            border-radius: 14px;
+            padding: 36px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .dropzone-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: var(--accent-cyan);
+        }
+
+        .dropzone p {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .dropzone span {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            margin-top: 16px;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            background: #10b981;
+        }
+
+        /* Analytics Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-value.danger {
+            color: var(--danger);
+        }
+
+        .stat-value.success {
+            color: var(--success);
+        }
+
+        .stat-value.accent {
+            color: var(--accent-cyan);
+        }
+
+        .risk-bar-container {
+            width: 100%;
+            height: 6px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .risk-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--success), var(--danger));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Toolbar Controls */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #334155;
+            color: var(--text-main);
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 260px;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        /* High Performance Table */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #0f172a;
+            max-height: 600px;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: var(--table-header-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+            color: #cbd5e1;
+        }
+
+        tr:hover td {
+            background: var(--table-row-hover);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .badge-danger {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Pagination */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 12px;
+        }
+
+        .page-info {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .page-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .select-rows {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 0.875rem;
+        }
+
+        /* Spinner & Alerts */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        /* Responsive Mobile tweaks */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .filter-tabs {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="brand-title">
+                <div class="brand-icon">🛡️</div>
+                <div class="brand-text">
+                    <h1>Network Security Threat AI</h1>
+                    <p>High-Performance Cyber Threat Detection & Feature Analysis</p>
+                </div>
+            </div>
+            <div>
+                <a href="/docs" target="_blank" class="btn btn-secondary"
+                    style="padding: 8px 16px; font-size: 0.85rem;">API Documentation (Swagger)</a>
+            </div>
+        </header>
+
+        <div id="alert-box" class="alert alert-error"></div>
+
+        <div class="card">
+            <form id="upload-form">
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon">📁</div>
+                    <p>Drag & Drop your Network Data CSV file here, or click to browse</p>
+                    <span>Supported format: .csv (containing feature vectors)</span>
+                    <input type="file" id="csv-file" accept=".csv" required>
+                </div>
+
+                <div class="file-info" id="file-info">
+                    <div class="file-details">
+                        <span>📄</span>
+                        <span id="file-name-display">filename.csv</span>
+                    </div>
+                    <button type="button" id="remove-file-btn" class="tab-btn"
+                        style="color: var(--danger);">Remove</button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <span id="btn-text">Run Security Prediction</span>
+                        <span id="btn-spinner" class="spinner" style="display: none;"></span>
+                    </button>
+                    <a id="download-btn" href="/download-prediction" class="btn btn-success" style="display: none;">
+                        ⬇️ Download Output CSV
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div id="results-section" style="display: none;">
+            <!-- Analytics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-title">Total Records Analyzed</span>
+                    <span class="stat-value accent" id="stat-total">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Threats Detected</span>
+                    <span class="stat-value danger" id="stat-threats">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Legitimate / Safe</span>
+                    <span class="stat-value success" id="stat-safe">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Threat Ratio</span>
+                    <span class="stat-value" id="stat-ratio">0%</span>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar-fill" id="risk-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table Controls -->
+            <div class="card" style="padding: 20px;">
+                <div class="toolbar">
+                    <div class="filter-tabs">
+                        <button class="tab-btn active" data-filter="all" onclick="setFilter('all')">All Records</button>
+                        <button class="tab-btn" data-filter="threat" onclick="setFilter('threat')">⚠️ Threats
+                            Only</button>
+                        <button class="tab-btn" data-filter="safe" onclick="setFilter('safe')">✅ Safe Only</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="search-input" class="search-input"
+                            placeholder="🔍 Search features or rows..." oninput="handleSearch()">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="data-table">
+                        <thead>
+                            <tr id="table-head"></tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-bar">
+                    <div class="page-info">
+                        Showing <span id="showing-start">0</span> to <span id="showing-end">0</span> of <span
+                            id="filtered-count">0</span> entries
+                    </div>
+                    <div class="page-controls">
+                        <select id="rows-per-page" class="select-rows" onchange="changePageSize(this.value)">
+                            <option value="10">10 per page</option>
+                            <option value="25" selected>25 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
+                        <button class="btn btn-secondary" style="padding: 6px 14px;" id="prev-btn"
+                            onclick="changePage(-1)">Previous</button>
+                        <span id="page-num-display" style="font-size: 0.875rem; color: var(--text-muted);">Page 1</span>
+                        <button class="btn btn-secondary" style="padding: 6px 14px;" id="next-btn"
+                            onclick="changePage(1)">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let rawData = [];
+        let columns = [];
+        let filteredData = [];
+        let currentPage = 1;
+        let pageSize = 25;
+        let activeFilter = 'all';
+        let searchQuery = '';
+
+        const dropzone = document.getElementById('dropzone');
+        const csvFileInput = document.getElementById('csv-file');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const removeFileBtn = document.getElementById('remove-file-btn');
+        const uploadForm = document.getElementById('upload-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+        const alertBox = document.getElementById('alert-box');
+        const resultsSection = document.getElementById('results-section');
+        const downloadBtn = document.getElementById('download-btn');
+
+        // Drag & Drop event handlers
+        dropzone.addEventListener('click', () => csvFileInput.click());
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            });
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                csvFileInput.files = files;
+                updateFileDisplay();
+            }
+        });
+
+        csvFileInput.addEventListener('change', updateFileDisplay);
+
+        function updateFileDisplay() {
+            if (csvFileInput.files.length) {
+                fileNameDisplay.textContent = csvFileInput.files[0].name;
+                dropzone.style.display = 'none';
+                fileInfo.style.display = 'flex';
+                showAlert('');
+            } else {
+                dropzone.style.display = 'block';
+                fileInfo.style.display = 'none';
+            }
+        }
+
+        removeFileBtn.addEventListener('click', () => {
+            csvFileInput.value = '';
+            updateFileDisplay();
+        });
+
+        function showAlert(msg) {
+            if (msg) {
+                alertBox.textContent = msg;
+                alertBox.style.display = 'block';
+            } else {
+                alertBox.style.display = 'none';
+            }
+        }
+
+        // Form submission via AJAX Fetch
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!csvFileInput.files.length) {
+                showAlert('Please select or drop a CSV file to continue.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', csvFileInput.files[0]);
+
+            submitBtn.disabled = true;
+            btnText.textContent = 'Processing & Running AI Model...';
+            btnSpinner.style.display = 'inline-block';
+            showAlert('');
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || result.status === 'error') {
+                    throw new Error(result.message || 'Prediction process failed.');
+                }
+
+                rawData = result.data || [];
+                columns = result.columns || [];
+
+                // Update stats cards
+                document.getElementById('stat-total').textContent = result.total.toLocaleString();
+                document.getElementById('stat-threats').textContent = result.threats.toLocaleString();
+                document.getElementById('stat-safe').textContent = result.safe.toLocaleString();
+
+                const threatPercent = result.total > 0 ? ((result.threats / result.total) * 100).toFixed(1) : 0;
+                document.getElementById('stat-ratio').textContent = threatPercent + '%';
+                document.getElementById('risk-bar').style.width = threatPercent + '%';
+
+                // Show results and download button
+                resultsSection.style.display = 'block';
+                downloadBtn.style.display = 'inline-flex';
+
+                // Reset pagination and filters
+                currentPage = 1;
+                activeFilter = 'all';
+                searchQuery = '';
+                document.getElementById('search-input').value = '';
+                updateTabUI();
+
+                // Build Table Header
+                buildTableHeader();
+                applyDataFilters();
+
+            } catch (err) {
+                showAlert('Error: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'Run Security Prediction';
+                btnSpinner.style.display = 'none';
+            }
+        });
+
+        function buildTableHeader() {
+            const tr = document.getElementById('table-head');
+            tr.innerHTML = '';
+            columns.forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col;
+                tr.appendChild(th);
+            });
+        }
+
+        function setFilter(filter) {
+            activeFilter = filter;
+            updateTabUI();
+            currentPage = 1;
+            applyDataFilters();
+        }
+
+        function updateTabUI() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.filter === activeFilter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            currentPage = 1;
+            applyDataFilters();
+        }
+
+        function applyDataFilters() {
+            filteredData = rawData.filter(row => {
+                // Threat vs Safe filter (0 or -1 is threat, 1 is safe)
+                const predVal = parseFloat(row['predicted_column']);
+                const isThreat = (predVal === 0 || predVal === -1);
+                const isSafe = (predVal === 1);
+
+                if (activeFilter === 'threat' && !isThreat) return false;
+                if (activeFilter === 'safe' && !isSafe) return false;
+
+                // Search query filter across all fields
+                if (searchQuery) {
+                    return Object.values(row).some(val =>
+                        String(val).toLowerCase().includes(searchQuery)
+                    );
+                }
+                return true;
+            });
+
+            renderTableBody();
+        }
+
+        function renderTableBody() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, filteredData.length);
+            const pageItems = filteredData.slice(startIdx, endIdx);
+
+            pageItems.forEach(row => {
+                const tr = document.createElement('tr');
+                columns.forEach(col => {
+                    const td = document.createElement('td');
+                    const val = row[col];
+
+                    if (col === 'predicted_column') {
+                        const numVal = parseFloat(val);
+                        if (numVal === 0 || numVal === -1) {
+                            td.innerHTML = `<span class="badge badge-danger">⚠️ Threat Detected (${val})</span>`;
+                        } else {
+                            td.innerHTML = `<span class="badge badge-success">✅ Safe (${val})</span>`;
+                        }
+                    } else {
+                        td.textContent = val !== null && val !== undefined ? val : '';
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+
+            // Update pagination UI
+            document.getElementById('filtered-count').textContent = filteredData.length.toLocaleString();
+            document.getElementById('showing-start').textContent = filteredData.length ? (startIdx + 1).toLocaleString() : 0;
+            document.getElementById('showing-end').textContent = endIdx.toLocaleString();
+
+            const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+            document.getElementById('page-num-display').textContent = `Page ${currentPage} of ${totalPages}`;
+
+            document.getElementById('prev-btn').disabled = currentPage <= 1;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages;
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredData.length / pageSize);
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTableBody();
+            }
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size, 10);
+            currentPage = 1;
+            renderTableBody();
+        }
+    </script>
+
+</body>
+
+</html>
